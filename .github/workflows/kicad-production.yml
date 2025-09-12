@@ -1,0 +1,203 @@
+name: KiCad Production Files
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  generate-production-files:
+    runs-on: ubuntu-latest
+    name: Generate KiCad Production Files and Documentation
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Generate Production Files and Documentation
+      uses: docker://ghcr.io/the78mole/kicaddev:latest
+      with:
+        args: |
+          bash -c "
+          set -e
+          
+          echo '🚀 Starting KiCad production file generation...'
+          
+          # Check if project files exist
+          echo '🔍 Checking project files...'
+          if [ ! -f dutlink.kicad_pro ]; then
+            echo '❌ dutlink.kicad_pro not found!'
+            ls -la *.kicad_* || echo 'No KiCad files found'
+            exit 1
+          fi
+          
+          if [ ! -f dutlink.kicad_pcb ]; then
+            echo '❌ dutlink.kicad_pcb not found!'
+            exit 1
+          fi
+          
+          if [ ! -f dutlink.kicad_sch ]; then
+            echo '❌ dutlink.kicad_sch not found!'
+            exit 1
+          fi
+          
+          echo '✅ All required project files found'
+          
+          # Export production data using the kicad_export script
+          echo '📋 Generating production files...'
+          kicad_export dutlink.kicad_pro
+          
+          # Additional 3D renderings using PcbDraw for nice visualizations
+          echo '🎨 Creating additional 3D visualizations...'
+          mkdir -p production/renders
+          
+          # Generate top and bottom PCB renders
+          pcbdraw plot dutlink.kicad_pcb production/renders/dutlink_top.png --style set-white-enig --side front
+          pcbdraw plot dutlink.kicad_pcb production/renders/dutlink_bottom.png --style set-white-enig --side back
+          
+          # Generate component placement views
+          pcbdraw plot dutlink.kicad_pcb production/renders/dutlink_components.png --style set-white-enig --side front --components
+          
+          # Create a combined assembly drawing
+          pcbdraw plot dutlink.kicad_pcb production/renders/dutlink_assembly.svg --style set-white-enig --side front --components
+          
+          echo '📊 Generating production summary...'
+          cat > production/PRODUCTION_README.md << 'EOF'
+          # DUTLink Production Files
+          
+          This directory contains all files needed for PCB manufacturing and assembly.
+          
+          ## Manufacturing Files
+          - **gerbers/** - Gerber files for PCB fabrication
+          - **drill/** - Drill files for via and hole drilling
+          - **dutlink_manufacturing.zip** - Complete package for PCB manufacturer
+          
+          ## Documentation
+          - **pdf/dutlink_schematic.pdf** - Complete schematic documentation
+          - **pdf/dutlink_pcb.pdf** - PCB layout with all layers
+          - **bom/dutlink_ibom.html** - Interactive HTML Bill of Materials
+          
+          ## 3D Models and Visualizations
+          - **3d/dutlink.step** - 3D model for mechanical verification
+          - **renders/dutlink_top.png** - Top view rendering
+          - **renders/dutlink_bottom.png** - Bottom view rendering
+          - **renders/dutlink_components.png** - Component placement view
+          - **renders/dutlink_assembly.svg** - Assembly drawing (vector)
+          
+          ## Usage
+          1. Send **dutlink_manufacturing.zip** to your PCB manufacturer
+          2. Use the **interactive BOM** for component placement during assembly
+          3. Reference **schematic PDF** for troubleshooting and modifications
+          4. Import **STEP file** into mechanical CAD for enclosure design
+          
+          Generated automatically by GitHub Actions workflow.
+          EOF
+          
+          echo '✅ Production file generation complete!'
+          echo ''
+          echo '📁 Generated files:'
+          find production -type f | sort
+          echo ''
+          echo '📊 File sizes:'
+          du -sh production/*
+          "
+          
+    - name: Upload Production Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: dutlink-production-files
+        path: production/
+        retention-days: 90
+        
+    - name: Upload Manufacturing Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: dutlink-manufacturing-package
+        path: production/dutlink_manufacturing.zip
+        retention-days: 90
+        
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v4
+      with:
+        name: dutlink-documentation
+        path: |
+          production/pdf/
+          production/bom/
+          production/PRODUCTION_README.md
+        retention-days: 90
+        
+    - name: Upload 3D Files and Renders
+      uses: actions/upload-artifact@v4
+      with:
+        name: dutlink-3d-and-renders
+        path: |
+          production/3d/
+          production/renders/
+        retention-days: 90
+
+    - name: Production Summary
+      run: |
+        echo "## 🎉 Production Files Generated Successfully!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Available Artifacts:" >> $GITHUB_STEP_SUMMARY
+        echo "- **dutlink-production-files** - Complete production package" >> $GITHUB_STEP_SUMMARY
+        echo "- **dutlink-manufacturing-package** - ZIP for PCB manufacturer" >> $GITHUB_STEP_SUMMARY
+        echo "- **dutlink-documentation** - PDFs and interactive BOM" >> $GITHUB_STEP_SUMMARY
+        echo "- **dutlink-3d-and-renders** - 3D models and visualizations" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Download the manufacturing package and send to PCB fab" >> $GITHUB_STEP_SUMMARY
+        echo "2. Use the interactive BOM for component sourcing and assembly" >> $GITHUB_STEP_SUMMARY
+        echo "3. Reference the schematic PDF for testing and troubleshooting" >> $GITHUB_STEP_SUMMARY
+        echo "4. Import the STEP file for mechanical design verification" >> $GITHUB_STEP_SUMMARY
+        
+    - name: Comment on PR with Artifact Links
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const runId = context.runId;
+          const repoUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+          const artifactUrl = `${repoUrl}/actions/runs/${runId}`;
+          
+          const comment = `## 🚀 KiCad Production Files Generated!
+          
+          The automated production workflow has successfully generated all manufacturing files and documentation for this PR.
+          
+          ### 📦 Download Artifacts
+          
+          Click the links below to download the generated files:
+          
+          | Artifact | Description | Download Link |
+          |----------|-------------|---------------|
+          | 🏭 **Manufacturing Package** | Complete ZIP for PCB fabrication | [dutlink-manufacturing-package](${artifactUrl}) |
+          | 📁 **Complete Production Files** | All generated files in one package | [dutlink-production-files](${artifactUrl}) |
+          | 📄 **Documentation** | Schematic PDFs and Interactive BOM | [dutlink-documentation](${artifactUrl}) |
+          | 🎨 **3D Models & Renders** | STEP files and PCB visualizations | [dutlink-3d-and-renders](${artifactUrl}) |
+          
+          ### 📋 What's Included
+          
+          - **Gerber Files** - Ready for PCB manufacturer submission
+          - **Drill Files** - For via and hole drilling
+          - **Schematic PDF** - Complete circuit documentation  
+          - **Interactive BOM** - HTML component placement guide
+          - **3D STEP Model** - For mechanical design verification
+          - **PCB Renders** - Professional top/bottom views and assembly drawings
+          
+          ### 🛠️ Next Steps
+          
+          1. **For Manufacturing**: Download the manufacturing package and send to your PCB fab
+          2. **For Assembly**: Use the interactive BOM for component sourcing and placement
+          3. **For Development**: Reference schematic PDF and import STEP file for enclosure design
+          
+          ---
+          *Generated automatically by GitHub Actions workflow on $(date)*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
