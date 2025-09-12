@@ -449,6 +449,31 @@ Please use GitHub Issues to report bugs with the following information:
 
 ---
 
+## 🚀 Releases and Production Files
+
+This repository uses **automated semantic versioning** and release generation. Every push to `main` creates a new release with production-ready files.
+
+### 📦 What's Included in Each Release
+
+- **📄 dutlink_schematic.pdf** - Complete schematic documentation
+- **📋 dutlink_pcb.pdf** - PCB layout with all layers  
+- **🔧 dutlink_ibom.html** - Interactive HTML Bill of Materials
+- **📦 dutlink_manufacturing.zip** - Complete manufacturing package
+
+### 🏷️ Version Bumping
+
+Versions follow semantic versioning based on commit messages:
+
+- **Patch** (default): `fix:`, `docs:`, `chore:` → v0.1.0 → v0.1.1
+- **Minor**: `feat:`, `feature:` → v0.1.0 → v0.2.0  
+- **Major**: `feat!:`, `BREAKING CHANGE:` → v0.1.0 → v1.0.0
+
+### 📖 More Information
+
+See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for detailed information about the automated release workflow.
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
