@@ -120,22 +120,22 @@ TP4  | HOST_D-       TP8  | STORAGE_D-
 ## 🏗️ Block Diagram
 
 ```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│    HOST     │◄──►│ USB 3.0 MUX  │◄──►│     DUT     │
-│   (Type-A)  │    │   Controller │    │  (Type-A)   │
-└─────────────┘    │              │    └─────────────┘
-                   │              │    
-                   │              │    ┌─────────────┐
-                   │              │◄──►│   STORAGE   │
-                   │              │    │  (Type-A)   │
-                   └──────────────┘    └─────────────┘
-                          ▲
-                          │
-                   ┌──────────────┐
-                   │ Control      │
-                   │ Interface    │
-                   │ (GPIO/I2C)   │
-                   └──────────────┘
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   STORAGE   │◄───►│ USB 3.0 MUX  │◄───►│    HOST     │
+│   (Type-A)  │  A  │   Controller │  B  │  (Type-A)   │
+└─────────────┘     │              │     └─────────────┘
+                    │              │    
+                    │              │     ┌─────────────┐
+                    │              │◄───►│    DUT      │
+                    │              │  C  │  (Type-A)   │
+                    └──────────────┘     └─────────────┘
+                           ▲
+                           │
+                    ┌──────────────┐
+                    │ Control      │
+                    │ Interface    │
+                    │ (GPIO/I2C)   │
+                    └──────────────┘
 ```
 
 ---
@@ -247,7 +247,7 @@ dutlink_manufacturing.zip
 - **Wave Soldering:** Not recommended due to fine-pitch components
 - **Reflow Profile:** Standard SAC305 lead-free profile
 - **Component Placement:** Use interactive BOM for accurate placement
-- **Testing:** Full in-circuit test recommended for production quantities
+- **Testing:** Just make a functional test
 
 ### 🧪 Testing and Validation
 
@@ -266,22 +266,6 @@ dutlink_manufacturing.zip
 
 ---
 
-## 🛡️ Safety and Compliance
-
-### Electrical Safety
-- **ESD Protection** - All external interfaces protected to IEC 61000-4-2 Level 4
-- **Overcurrent Protection** - Electronic fuses on all VBUS lines
-- **Isolation** - Control interface isolated from USB power domains
-- **Thermal Management** - Thermal vias and copper pours for heat dissipation
-
-### Regulatory Compliance
-- **CE Marking** - Designed for EMC compliance (EN 55032, EN 55035)
-- **FCC Part 15** - Class B digital device requirements
-- **RoHS Compliance** - Lead-free components and processes
-- **USB-IF Compliance** - Meets USB 3.0 specification requirements
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions to improve DUTLink! Here's how to get started:
@@ -289,29 +273,32 @@ We welcome contributions to improve DUTLink! Here's how to get started:
 ### 🔧 Development Setup
 
 1. **Clone Repository**
-   ```bash
-   git clone https://github.com/the78mole/dutlink-board.git
-   cd dutlink-board
-   ```
+
+```bash
+git clone https://github.com/jumpstarter/dutlink-board.git
+cd dutlink-board
+```
 
 2. **KiCad Setup**
-   ```bash
-   # Open project in KiCad
-   kicad dutlink.kicad_pro
-   
-   # Or use Docker for CLI operations
-   docker run --rm -v $(pwd):/workspace \
-     ghcr.io/the78mole/kicaddev:latest \
-     kicad-cli --help
-   ```
+
+```bash
+# Open project in KiCad
+kicad dutlink.kicad_pro
+
+# Or use Docker for CLI operations
+docker run --rm -v $(pwd):/workspace \
+   ghcr.io/the78mole/kicaddev:latest \
+   kicad-cli --help
+```
 
 3. **Generate Production Files**
-   ```bash
-   # Local generation using Docker
-   docker run --rm -v $(pwd):/workspace \
-     ghcr.io/the78mole/kicaddev:latest \
-     kicad_export dutlink.kicad_pro
-   ```
+
+```bash
+# Local generation using Docker
+docker run --rm -v $(pwd):/workspace \
+   ghcr.io/the78mole/kicaddev:latest \
+   kicad_export dutlink.kicad_pro
+```
 
 ### 📝 Contribution Guidelines
 
@@ -334,12 +321,14 @@ Please use GitHub Issues to report bugs with the following information:
 ## 📚 Documentation
 
 ### 📖 Additional Resources
+
 - **[KiCad Project Files](dutlink.kicad_pro)** - Complete design files
 - **Schematic PDF** — available in the latest [Releases](../../releases)  
 - **Interactive BOM** — available in the latest [Releases](../../releases)  
 - **3D Models** — download from the workflow [Artifacts](../../actions) 
 
 ### 🎓 Learning Resources
+
 - **[KiCad Documentation](https://docs.kicad.org/)** - Official KiCad resources
 - **[USB 3.0 Specification](https://www.usb.org/documents)** - USB-IF specifications
 - **[PCB Design Guidelines](https://www.ti.com/lit/an/slva959/slva959.pdf)** - High-speed design practices
