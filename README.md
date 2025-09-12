@@ -3,7 +3,7 @@
 > **Professional USB 3.0 switching and power management solution for device testing and development**
 
 [![KiCad Production Files](https://github.com/the78mole/dutlink-board/actions/workflows/kicad-production.yml/badge.svg)](https://github.com/the78mole/dutlink-board/actions/workflows/kicad-production.yml)
-[![License: MIT](https://img.shields.io/github/license/the78mole/dutlink-board)](LICENSE)
+[![License: TAPR OHL](https://img.shields.io/github/license/the78mole/dutlink-board)](LICENSE)
 [![GitHub Release](https://img.shields.io/github/v/release/the78mole/dutlink-board)](https://github.com/the78mole/dutlink-board/releases)
 
 DUTLink is a sophisticated USB 3.0 multiplexer board designed for automated testing and development workflows. It enables seamless switching between host connections and storage devices while providing precise power management and monitoring capabilities.
@@ -335,9 +335,9 @@ Please use GitHub Issues to report bugs with the following information:
 
 ### 📖 Additional Resources
 - **[KiCad Project Files](dutlink.kicad_pro)** - Complete design files
-- **[Schematic PDF](production/pdf/dutlink_schematic.pdf)** - Detailed circuit documentation
-- **[Interactive BOM](production/bom/dutlink_ibom.html)** - Component placement guide
-- **[3D Models](production/3d/)** - Mechanical design files
+- **Schematic PDF** — available in the latest [Releases](../../releases)  
+- **Interactive BOM** — available in the latest [Releases](../../releases)  
+- **3D Models** — download from the workflow [Artifacts](../../actions) 
 
 ### 🎓 Learning Resources
 - **[KiCad Documentation](https://docs.kicad.org/)** - Official KiCad resources
@@ -373,7 +373,7 @@ See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for detailed information about the 
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the TAPR Open Hardware License - see the [LICENSE](LICENSE) file for details.
 
 ### 📋 License Summary
 - ✅ **Commercial Use** - Use in commercial products
