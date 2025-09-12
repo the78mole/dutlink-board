@@ -2,9 +2,9 @@
 
 > **Professional USB 3.0 switching and power management solution for device testing and development**
 
-[![KiCad Production Files](https://github.com/the78mole/dutlink-board/actions/workflows/kicad-production.yml/badge.svg)](https://github.com/the78mole/dutlink-board/actions/workflows/kicad-production.yml)
-[![License: TAPR OHL](https://img.shields.io/github/license/the78mole/dutlink-board)](LICENSE)
-[![GitHub Release](https://img.shields.io/github/v/release/the78mole/dutlink-board)](https://github.com/the78mole/dutlink-board/releases)
+[![KiCad Production Files](./actions/workflows/kicad-production.yml/badge.svg)](./actions/workflows/kicad-production.yml)
+[![License: TAPR OHL](https://img.shields.io/github/license/jumpstarter-dev/dutlink-board)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/jumpstarter-dev/dutlink-board)](/releases)
 
 DUTLink is a sophisticated USB 3.0 multiplexer board designed for automated testing and development workflows. It enables seamless switching between host connections and storage devices while providing precise power management and monitoring capabilities.
 
