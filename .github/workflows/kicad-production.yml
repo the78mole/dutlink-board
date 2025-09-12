@@ -212,7 +212,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     outputs:
       version: ${{ steps.version.outputs.version }}
-      version-tag: ${{ steps.version.outputs.version-tag }}
+      version-tag: ${{ steps.version.outputs.tag }}
       changed: ${{ steps.version.outputs.changed }}
     steps:
     - name: Checkout repository
