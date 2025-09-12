@@ -201,3 +201,125 @@ jobs:
             repo: context.repo.repo,
             body: comment
           });
+
+  semantic-version:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version-tag: ${{ steps.version.outputs.version-tag }}
+      changed: ${{ steps.version.outputs.changed }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Semantic Version
+      id: version
+      uses: paulhatch/semantic-version@v5.4.0
+      with:
+        tag_prefix: "v"
+        major_pattern: "(BREAKING CHANGE|!:)"
+        minor_pattern: "(feat|feature):"
+        version_format: "${major}.${minor}.${patch}"
+        bump_each_commit: true
+        search_commit_body: false
+        user_format_type: "csv"
+        enable_prerelease_mode: false
+        debug: false
+        initial_version: "0.1.0"
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [generate-production-files, semantic-version]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.semantic-version.outputs.changed == 'true'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Download production artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dutlink-production-files
+        path: ./production-artifacts
+        
+    - name: Download documentation artifacts  
+      uses: actions/download-artifact@v4
+      with:
+        name: dutlink-documentation
+        path: ./documentation-artifacts
+        
+    - name: Prepare release assets
+      run: |
+        mkdir -p ./release-assets
+        
+        # Copy PDF files
+        if [ -f "./documentation-artifacts/production/pdf/dutlink_schematic.pdf" ]; then
+          cp "./documentation-artifacts/production/pdf/dutlink_schematic.pdf" "./release-assets/"
+        elif [ -f "./production-artifacts/pdf/dutlink_schematic.pdf" ]; then
+          cp "./production-artifacts/pdf/dutlink_schematic.pdf" "./release-assets/"
+        fi
+        
+        if [ -f "./documentation-artifacts/production/pdf/dutlink_pcb.pdf" ]; then
+          cp "./documentation-artifacts/production/pdf/dutlink_pcb.pdf" "./release-assets/"  
+        elif [ -f "./production-artifacts/pdf/dutlink_pcb.pdf" ]; then
+          cp "./production-artifacts/pdf/dutlink_pcb.pdf" "./release-assets/"
+        fi
+        
+        # Copy interactive BOM
+        if [ -f "./documentation-artifacts/production/bom/dutlink_ibom.html" ]; then
+          cp "./documentation-artifacts/production/bom/dutlink_ibom.html" "./release-assets/"
+        elif [ -f "./production-artifacts/bom/dutlink_ibom.html" ]; then
+          cp "./production-artifacts/bom/dutlink_ibom.html" "./release-assets/"
+        fi
+        
+        # Copy manufacturing ZIP for convenience
+        if [ -f "./production-artifacts/dutlink_manufacturing.zip" ]; then
+          cp "./production-artifacts/dutlink_manufacturing.zip" "./release-assets/"
+        fi
+        
+        echo "Release assets prepared:"
+        ls -la ./release-assets/
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ needs.semantic-version.outputs.version-tag }}
+        name: "Release ${{ needs.semantic-version.outputs.version-tag }}"
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        files: |
+          ./release-assets/dutlink_schematic.pdf
+          ./release-assets/dutlink_pcb.pdf
+          ./release-assets/dutlink_ibom.html
+          ./release-assets/dutlink_manufacturing.zip
+        body: |
+          ## 🎉 DUTLink Board Release ${{ needs.semantic-version.outputs.version-tag }}
+          
+          This release contains the production-ready files for the DUTLink board design.
+          
+          ### 📦 Release Assets
+          
+          - **dutlink_schematic.pdf** - Complete schematic documentation
+          - **dutlink_pcb.pdf** - PCB layout with all layers  
+          - **dutlink_ibom.html** - Interactive HTML Bill of Materials
+          - **dutlink_manufacturing.zip** - Complete manufacturing package for PCB fabrication
+          
+          ### 🛠️ Usage Instructions
+          
+          1. **For PCB Manufacturing**: Download `dutlink_manufacturing.zip` and send to your PCB fabricator
+          2. **For Assembly**: Open `dutlink_ibom.html` in a web browser for interactive component placement guide
+          3. **For Documentation**: Reference `dutlink_schematic.pdf` for circuit analysis and troubleshooting
+          4. **For Layout Review**: Use `dutlink_pcb.pdf` to review the complete PCB layout
+          
+          ### 🔄 Version Information
+          
+          - **Version**: ${{ needs.semantic-version.outputs.version-tag }}
+          - **Generated**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          - **Commit**: ${{ github.sha }}
+          
+          All files in this release are automatically generated from the latest committed design files.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
