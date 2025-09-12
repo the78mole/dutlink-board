@@ -385,10 +385,8 @@ This project is licensed under the TAPR Open Hardware License - see the [LICENSE
 
 ## 📞 Support
 
-- **📧 Email** - [Contact](mailto:support@example.com)
-- **💬 Discussions** - [GitHub Discussions](https://github.com/the78mole/dutlink-board/discussions)
-- **🐛 Issues** - [GitHub Issues](https://github.com/the78mole/dutlink-board/issues)
-- **📱 Discord** - [Hardware Development Server](https://discord.gg/hardware-dev)
+- **🐛 Issues** - [GitHub Issues](https://github.com/jumpstarter/dutlink-board/issues)
+- **🔗 Matrix** - [#jumpstarter:matrix.org](https://matrix.to/#/#jumpstarter:matrix.org)
 
 ---
 
