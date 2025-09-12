@@ -225,15 +225,11 @@ jobs:
       uses: paulhatch/semantic-version@v5.4.0
       with:
         tag_prefix: "v"
-        major_pattern: "(BREAKING CHANGE|!:)"
-        minor_pattern: "(feat|feature):"
+        major_pattern: "/(BREAKING CHANGE|feat|fix)!:/"
+        minor_pattern: "/(feat|fix):/"
         version_format: "${major}.${minor}.${patch}"
         bump_each_commit: true
         search_commit_body: false
-        user_format_type: "csv"
-        enable_prerelease_mode: false
-        debug: false
-        initial_version: "0.1.0"
 
   create-release:
     runs-on: ubuntu-latest
