@@ -35,7 +35,6 @@ DUTLink is a sophisticated USB 3.0 multiplexer board designed for automated test
 ### 🔧 Professional Grade
 - **4-Layer PCB** - Optimized for signal integrity and EMI performance
 - **Industrial Connectors** - Robust USB 3.0 connectors rated for high cycles
-- **ESD Protection** - Comprehensive protection on all USB lines
 - **Compact Design** - Minimal footprint for integration flexibility
 
 ---
@@ -71,26 +70,6 @@ SEL = LOW  → DUT connected to HOST
 SEL = HIGH → STORAGE connected to HOST
 ```
 
-#### Advanced I2C Control
-```c
-// Example Arduino code
-#include <Wire.h>
-#define DUTLINK_ADDR 0x48
-
-void selectDUT() {
-    Wire.beginTransmission(DUTLINK_ADDR);
-    Wire.write(0x01); // Select DUT
-    Wire.endTransmission();
-}
-
-void selectStorage() {
-    Wire.beginTransmission(DUTLINK_ADDR);
-    Wire.write(0x02); // Select Storage
-    Wire.endTransmission();
-}
-```
-
----
 
 ## 📋 Technical Specifications
 
@@ -113,31 +92,9 @@ void selectStorage() {
 | Operating Temperature | -10 to +60 | °C |
 | Storage Temperature | -40 to +85 | °C |
 
-### Connector Specifications
-| Connector | Type | Cycles | Notes |
-|-----------|------|--------|-------|
-| HOST | USB 3.0 Type-A | 10,000 | Gold-plated contacts |
-| DUT | USB 3.0 Type-A | 10,000 | Gold-plated contacts |
-| STORAGE | USB 3.0 Type-A | 10,000 | Gold-plated contacts |
-| Power | 2.1mm Barrel | 5,000 | Center positive |
-
 ---
 
 ## 🔌 Pinout and Connections
-
-### Control Interface (J1)
-```
-Pin | Signal    | Direction | Description
-----|-----------|-----------|---------------------------
-1   | VCC       | Power     | 5V power input
-2   | GND       | Power     | Ground reference
-3   | SEL       | Input     | Port select (3.3V/5V tolerant)
-4   | SDA       | I/O       | I2C data line (3.3V)
-5   | SCL       | Input     | I2C clock line (3.3V)
-6   | INT       | Output    | Interrupt output (3.3V)
-7   | EN        | Input     | Power enable (3.3V/5V tolerant)
-8   | GND       | Power     | Ground reference
-```
 
 ### Status LEDs
 ```
@@ -306,66 +263,6 @@ dutlink_manufacturing.zip
 2. **Thermal Performance** - Temperature rise under load
 3. **EMI/EMC** - Compliance testing if required
 4. **Durability** - Connector cycle testing
-
----
-
-## 🎯 Use Cases
-
-### 🧪 Automated Testing
-```yaml
-# Example GitHub Actions workflow for device testing
-- name: Test Device
-  run: |
-    # Switch to DUT for firmware flashing
-    gpio-control dutlink --select dut
-    flash-firmware device.bin
-    
-    # Switch to storage for data verification
-    gpio-control dutlink --select storage
-    verify-data test-data.bin
-```
-
-### 🔬 Development Workflow
-```bash
-# Example development script
-#!/bin/bash
-
-echo "Starting development cycle..."
-
-# Flash new firmware
-dutlink-control --select dut
-avrdude -p m328p -c usbasp -U flash:w:firmware.hex
-
-# Run tests with storage device
-dutlink-control --select storage
-./run-tests.sh
-
-# Collect data and analyze
-dutlink-control --monitor-power
-./analyze-power-consumption.py
-```
-
-### 🏭 Production Testing
-```python
-# Production test station integration
-import dutlink
-
-def production_test(unit_id):
-    board = dutlink.DUTLink("/dev/ttyUSB0")
-    
-    # Test sequence
-    board.select_dut()
-    if not board.flash_firmware("production.bin"):
-        return False
-        
-    board.select_storage()
-    if not board.verify_functionality():
-        return False
-        
-    # Log results
-    board.log_test_results(unit_id)
-    return True
-```
 
 ---
 
