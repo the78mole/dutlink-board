@@ -226,6 +226,14 @@ This repository includes GitHub Actions workflow that automatically generates pr
 - **3D Models** - STEP files for mechanical verification
 - **Renderings** - High-quality PCB visualizations
 
+**Workflow Features:**
+- ✅ **Fully Automated** - Runs on every commit and pull request
+- ✅ **Professional Quality** - Uses KiCad 9.0 and latest production tools
+- ✅ **Multiple Formats** - Gerbers, PDFs, 3D models, and visualizations
+- ✅ **Ready for Manufacturing** - ZIP packages for direct submission
+- ✅ **Interactive BOM** - Web-based component placement guide
+- ✅ **Error Handling** - Comprehensive validation and error reporting
+
 **Workflow Triggers:**
 - Push to main/master branch
 - Pull request creation
@@ -241,6 +249,32 @@ After each successful workflow run, the following artifacts are available:
 | `dutlink-documentation` | PDFs, interactive BOM | Assembly and troubleshooting |
 | `dutlink-3d-and-renders` | STEP files, PNG renders | Mechanical design, marketing |
 | `dutlink-production-files` | Complete production package | Full archive |
+
+**How to Download Artifacts:**
+1. Go to the [Actions tab](../../actions) in this repository
+2. Click on the latest successful workflow run
+3. Scroll down to the "Artifacts" section
+4. Download the needed artifact ZIP file
+
+**Direct Manufacturing:**
+The `dutlink-manufacturing-package` contains everything your PCB manufacturer needs:
+```
+dutlink_manufacturing.zip
+├── gerbers/
+│   ├── dutlink-F_Cu.gbr           # Top copper layer
+│   ├── dutlink-B_Cu.gbr           # Bottom copper layer
+│   ├── dutlink-F_Silkscreen.gbr   # Top silkscreen
+│   ├── dutlink-B_Silkscreen.gbr   # Bottom silkscreen
+│   ├── dutlink-F_Mask.gbr         # Top solder mask
+│   ├── dutlink-B_Mask.gbr         # Bottom solder mask
+│   ├── dutlink-F_Paste.gbr        # Top solder paste
+│   ├── dutlink-B_Paste.gbr        # Bottom solder paste
+│   └── dutlink-Edge_Cuts.gbr      # Board outline
+└── drill/
+    ├── dutlink-PTH.drl            # Plated through holes
+    ├── dutlink-NPTH.drl           # Non-plated holes
+    └── dutlink-PTH-drl_map.gbr    # Drill map
+```
 
 ### 🏭 Manufacturing Guidelines
 

@@ -26,10 +26,24 @@ jobs:
           echo '🚀 Starting KiCad production file generation...'
           
           # Check if project files exist
+          echo '🔍 Checking project files...'
           if [ ! -f dutlink.kicad_pro ]; then
             echo '❌ dutlink.kicad_pro not found!'
+            ls -la *.kicad_* || echo 'No KiCad files found'
             exit 1
           fi
+          
+          if [ ! -f dutlink.kicad_pcb ]; then
+            echo '❌ dutlink.kicad_pcb not found!'
+            exit 1
+          fi
+          
+          if [ ! -f dutlink.kicad_sch ]; then
+            echo '❌ dutlink.kicad_sch not found!'
+            exit 1
+          fi
+          
+          echo '✅ All required project files found'
           
           # Export production data using the kicad_export script
           echo '📋 Generating production files...'
