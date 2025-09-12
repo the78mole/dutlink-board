@@ -3,7 +3,8 @@
 > **Professional USB 3.0 switching and power management solution for device testing and development**
 
 [![KiCad Production Files](./actions/workflows/kicad-production.yml/badge.svg)](./actions/workflows/kicad-production.yml)
-[![License: TAPR OHL](https://img.shields.io/github/license/jumpstarter-dev/dutlink-board)](LICENSE)
+[![Hardware License: TAPR OHL](https://img.shields.io/badge/Hardware%20License-TAPR%20OHL-blue)](LICENSE)
+[![Software License: MIT](https://img.shields.io/badge/Software%20License-MIT-green)](LICENSE-MIT)
 [![GitHub Release](https://img.shields.io/github/v/release/jumpstarter-dev/dutlink-board)](/releases)
 
 DUTLink is a sophisticated USB 3.0 multiplexer board designed for automated testing and development workflows. It enables seamless switching between host connections and storage devices while providing precise power management and monitoring capabilities.
@@ -362,15 +363,28 @@ See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for detailed information about the 
 
 ## 📄 License
 
-This project is licensed under the TAPR Open Hardware License - see the [LICENSE](LICENSE) file for details.
+This project uses a dual-license approach:
+
+- **Hardware/Design Files**: [TAPR Open Hardware License v1.0](LICENSE)
+- **Software/Firmware/Scripts**: [MIT License](LICENSE-MIT)
 
 ### 📋 License Summary
+
+**Hardware License (TAPR OHL):**
 - ✅ **Commercial Use** - Use in commercial products
 - ✅ **Modification** - Adapt and modify the design
 - ✅ **Distribution** - Share and redistribute
 - ✅ **Private Use** - Use for personal projects
 - ❗ **Liability** - No warranty or liability guarantee
 - ❗ **Attribution** - Include original license notice
+
+**Software License (MIT):**
+- ✅ **Commercial Use** - Use in commercial software
+- ✅ **Modification** - Adapt and modify the code
+- ✅ **Distribution** - Share and redistribute
+- ✅ **Private Use** - Use for personal projects
+- ✅ **Sublicensing** - Sublicense to third parties
+- ❗ **Liability** - No warranty or liability guarantee
 
 ---
 
@@ -385,7 +399,7 @@ This project is licensed under the TAPR Open Hardware License - see the [LICENSE
 
 ## 📞 Support
 
-- **🐛 Issues** - [GitHub Issues](https://github.com/jumpstarter/dutlink-board/issues)
+- **🐛 Issues** - [GitHub Issues](../../issues)
 - **🔗 Matrix** - [#jumpstarter:matrix.org](https://matrix.to/#/#jumpstarter:matrix.org)
 
 ---

@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+IFS=$'\n\t'
 
-echo "## 🎉 Production Files Generated Successfully!" >> $GITHUB_STEP_SUMMARY
-echo "" >> $GITHUB_STEP_SUMMARY
-echo "### 📦 Available Artifacts:" >> $GITHUB_STEP_SUMMARY
-echo "- **dutlink-production-files** - Complete production package" >> $GITHUB_STEP_SUMMARY
-echo "- **dutlink-manufacturing-package** - ZIP for PCB manufacturer" >> $GITHUB_STEP_SUMMARY
-echo "- **dutlink-documentation** - PDFs and interactive BOM" >> $GITHUB_STEP_SUMMARY
-echo "- **dutlink-3d-and-renders** - 3D models and visualizations" >> $GITHUB_STEP_SUMMARY
-echo "" >> $GITHUB_STEP_SUMMARY
-echo "### 📋 Next Steps:" >> $GITHUB_STEP_SUMMARY
-echo "1. Download the manufacturing package and send to PCB fab" >> $GITHUB_STEP_SUMMARY
-echo "2. Use the interactive BOM for component sourcing and assembly" >> $GITHUB_STEP_SUMMARY
-echo "3. Reference the schematic PDF for testing and troubleshooting" >> $GITHUB_STEP_SUMMARY
-echo "4. Import the STEP file for mechanical design verification" >> $GITHUB_STEP_SUMMARY
+# Determine safe summary file
+if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]] && [[ -w "$(dirname "${GITHUB_STEP_SUMMARY}")" ]]; then
+  SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
+elif [[ -w /tmp ]]; then
+  SUMMARY_FILE="$(mktemp)"
+  echo "Warning: GITHUB_STEP_SUMMARY not available, using temporary file: ${SUMMARY_FILE}" >&2
+else
+  SUMMARY_FILE="/dev/null"
+  echo "Warning: No writable location for summary, output discarded" >&2
+fi
+
+echo "## 🎉 Production Files Generated Successfully!" >> "${SUMMARY_FILE}"
+echo "" >> "${SUMMARY_FILE}"
+echo "### 📦 Available Artifacts:" >> "${SUMMARY_FILE}"
+echo "- **dutlink-production-files** - Complete production package" >> "${SUMMARY_FILE}"
+echo "- **dutlink-manufacturing-package** - ZIP for PCB manufacturer" >> "${SUMMARY_FILE}"
+echo "- **dutlink-documentation** - PDFs and interactive BOM" >> "${SUMMARY_FILE}"
+echo "- **dutlink-3d-and-renders** - 3D models and visualizations" >> "${SUMMARY_FILE}"
+echo "" >> "${SUMMARY_FILE}"
+echo "### 📋 Next Steps:" >> "${SUMMARY_FILE}"
+echo "1. Download the manufacturing package and send to PCB fab" >> "${SUMMARY_FILE}"
+echo "2. Use the interactive BOM for component sourcing and assembly" >> "${SUMMARY_FILE}"
+echo "3. Reference the schematic PDF for testing and troubleshooting" >> "${SUMMARY_FILE}"
+echo "4. Import the STEP file for mechanical design verification" >> "${SUMMARY_FILE}"

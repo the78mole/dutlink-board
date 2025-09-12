@@ -1,7 +1,39 @@
+
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+IFS=$'\n\t'
+
+# Print error with script name, line number, and exit status
+err_report() {
+  local exit_code=$?
+  local line_no=${BASH_LINENO[0]:-unknown}
+  local script_name=$(basename "$0")
+  echo "[ERROR] $script_name failed at line $line_no with exit code $exit_code" >&2
+}
+trap err_report ERR
+
+# Cleanup or restore options if needed
+cleanup() {
+  : # Placeholder for future cleanup logic
+}
+trap cleanup EXIT
+
 
 echo '🚀 Starting KiCad production file generation...'
+
+# Preflight: Check required tools
+missing_tools=()
+for tool in kicad_export pcbdraw; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    missing_tools+=("$tool")
+  fi
+done
+if [ ${#missing_tools[@]} -ne 0 ]; then
+  echo "❌ Missing required tool(s): ${missing_tools[*]}" >&2
+  echo "Please ensure all required tools are installed and in PATH before running this script." >&2
+  exit 2
+fi
+
 
 # Check if project files exist
 echo '🔍 Checking project files...'

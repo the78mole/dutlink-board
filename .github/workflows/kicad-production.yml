@@ -194,6 +194,10 @@ jobs:
         
         echo "Release assets prepared:"
         ls -la ./release-assets/
+
+    - name: Compute UTC timestamp
+      id: ts
+      run: echo "utc=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
         
     - name: Create Release
       uses: softprops/action-gh-release@v2
@@ -230,7 +234,7 @@ jobs:
           ### 🔄 Version Information
           
           - **Version**: ${{ needs.semantic-version.outputs.version-tag }}
-          - **Generated**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          - **Generated**: ${{ steps.ts.outputs.utc }}
           - **Commit**: ${{ github.sha }}
           
           All files in this release are automatically generated from the latest committed design files.
