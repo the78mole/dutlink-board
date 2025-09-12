@@ -152,3 +152,52 @@ jobs:
         echo "2. Use the interactive BOM for component sourcing and assembly" >> $GITHUB_STEP_SUMMARY
         echo "3. Reference the schematic PDF for testing and troubleshooting" >> $GITHUB_STEP_SUMMARY
         echo "4. Import the STEP file for mechanical design verification" >> $GITHUB_STEP_SUMMARY
+        
+    - name: Comment on PR with Artifact Links
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const runId = context.runId;
+          const repoUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+          const artifactUrl = `${repoUrl}/actions/runs/${runId}`;
+          
+          const comment = `## 🚀 KiCad Production Files Generated!
+          
+          The automated production workflow has successfully generated all manufacturing files and documentation for this PR.
+          
+          ### 📦 Download Artifacts
+          
+          Click the links below to download the generated files:
+          
+          | Artifact | Description | Download Link |
+          |----------|-------------|---------------|
+          | 🏭 **Manufacturing Package** | Complete ZIP for PCB fabrication | [dutlink-manufacturing-package](${artifactUrl}) |
+          | 📁 **Complete Production Files** | All generated files in one package | [dutlink-production-files](${artifactUrl}) |
+          | 📄 **Documentation** | Schematic PDFs and Interactive BOM | [dutlink-documentation](${artifactUrl}) |
+          | 🎨 **3D Models & Renders** | STEP files and PCB visualizations | [dutlink-3d-and-renders](${artifactUrl}) |
+          
+          ### 📋 What's Included
+          
+          - **Gerber Files** - Ready for PCB manufacturer submission
+          - **Drill Files** - For via and hole drilling
+          - **Schematic PDF** - Complete circuit documentation  
+          - **Interactive BOM** - HTML component placement guide
+          - **3D STEP Model** - For mechanical design verification
+          - **PCB Renders** - Professional top/bottom views and assembly drawings
+          
+          ### 🛠️ Next Steps
+          
+          1. **For Manufacturing**: Download the manufacturing package and send to your PCB fab
+          2. **For Assembly**: Use the interactive BOM for component sourcing and placement
+          3. **For Development**: Reference schematic PDF and import STEP file for enclosure design
+          
+          ---
+          *Generated automatically by GitHub Actions workflow on $(date)*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
