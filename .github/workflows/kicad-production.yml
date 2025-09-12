@@ -113,33 +113,41 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: dutlink-production-files
-        path: production/
+        path: |
+          production/pdf/*
+          production/bom/*
+          production/gerbers/*
+          production/drill/*
+          production/dutlink_manufacturing.zip
+          production/3d/*
+          production/renders/*
+          production/PRODUCTION_README.md
         retention-days: 90
-        
+
     - name: Upload Manufacturing Package
       uses: actions/upload-artifact@v4
       with:
         name: dutlink-manufacturing-package
         path: production/dutlink_manufacturing.zip
         retention-days: 90
-        
+
     - name: Upload Documentation
       uses: actions/upload-artifact@v4
       with:
         name: dutlink-documentation
         path: |
-          production/pdf/
-          production/bom/
+          production/pdf/*
+          production/bom/*
           production/PRODUCTION_README.md
         retention-days: 90
-        
+
     - name: Upload 3D Files and Renders
       uses: actions/upload-artifact@v4
       with:
         name: dutlink-3d-and-renders
         path: |
-          production/3d/
-          production/renders/
+          production/3d/*
+          production/renders/*
         retention-days: 90
 
     - name: Production Summary
@@ -225,11 +233,11 @@ jobs:
       uses: paulhatch/semantic-version@v5.4.0
       with:
         tag_prefix: "v"
-        major_pattern: "/(BREAKING CHANGE|feat|fix)!:/"
-        minor_pattern: "/(feat|fix):/"
+        major_pattern: "/^(BREAKING CHANGE|feat|fix)!:/"
+        minor_pattern: "/^(feat|fix):/"
         version_format: "${major}.${minor}.${patch}"
         bump_each_commit: true
-        search_commit_body: false
+        search_commit_body: true
 
   create-release:
     runs-on: ubuntu-latest
