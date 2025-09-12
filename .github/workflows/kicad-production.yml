@@ -110,7 +110,7 @@ jobs:
           3. **For Development**: Reference schematic PDF and import STEP file for enclosure design
           
           ---
-          *Generated automatically by GitHub Actions workflow on $(date)*`;
+          *Generated automatically by GitHub Actions workflow on ${new Date().toLocaleString()}*`;
           
           github.rest.issues.createComment({
             issue_number: context.issue.number,
