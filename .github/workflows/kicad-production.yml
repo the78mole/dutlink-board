@@ -200,7 +200,7 @@ jobs:
       run: echo "utc=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
         
     - name: Create Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         tag_name: ${{ needs.semantic-version.outputs.version-tag }}
         name: "Release ${{ needs.semantic-version.outputs.version-tag }}"
